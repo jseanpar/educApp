@@ -1,0 +1,81 @@
+import React, { Component } from 'react'
+import { SafeAreaView, BackHandler, FlatList, View, ActivityIndicator } from 'react-native'
+import { connect } from 'react-redux'
+import { NavigationActions } from 'react-navigation'
+import { Container, Content } from 'native-base'
+
+import API from '../../../utils/api'
+import Header  from '../../sections/containers/header'
+import HeaderBackButton from '../../sections/components/header-back-button'
+import SudentInfo from '../../sections/containers/student-info'
+import Empty from '../../videos/components/empty'
+import Subject from '../../videos/components/subject'
+
+
+class SubjectList extends Component {
+
+    state = { loading: true }
+
+    constructor ( props ) {
+        super ( props )
+        this.handleBackButtonClick = this.handleBackButtonClick.bind ( this )
+    }
+
+    static navigationOptions = () => { return { header: null, } }
+
+    async componentDidMount () {
+        const subjectList = await API.getSubjectListByStudent ( this.props.student.grcu_sec, this.props.student.fial_sec_alum )
+        this.props.dispatch ( { type: 'SET_SUBJECT_LIST', payload: { subjectList } } )
+        BackHandler.addEventListener ( 'hardwareBackPress', this.handleBackButtonClick )
+        this.setState ( { loading: false } )
+    }
+
+    componentWillUnmount () {
+        BackHandler.removeEventListener ( 'hardwareBackPress', this.handleBackButtonClick ) 
+    }
+    
+    handleBackButtonClick () {
+        this.props.navigation.goBack ( null )
+        return true
+    }
+    
+    keyExtractor = item => item.asig_cod.toString ()
+    renderEmpty = () => <Empty text = "No se encontraron registros" />
+    subjectPress = ( item ) => { 
+        this.props.dispatch ( { type: 'SET_SELECTED_SUBJECT', payload: { subject: item, } } )
+        this.props.dispatch ( NavigationActions.navigate ( { routeName: 'SubjectDetail' } ) )
+    }
+
+    renderItem = ( { item } ) => { 
+        return(
+            <Subject {...item} onPress={ () => { this.subjectPress ( item ) } } />
+        ) 
+    }
+
+    render () {
+        return (
+            <SafeAreaView style = { { flex:1 } } >
+                <Container>
+                    <Header navigation = { this.props.navigation } title = 'Notas' >
+                        <HeaderBackButton onPress = { () => { this.props.navigation.goBack() } } />
+                    </Header>
+                    <Content padder>
+                        <SudentInfo />
+                        { this.state.loading ? 
+                            <ActivityIndicator color = "#0098D0" size = "large" style = { { flex: 1, justifyContent: 'center', alignItems: 'center', height: 200 } } />
+                        : 
+                            (<View style = { { marginTop: 10 } } >
+                                <FlatList keyExtractor = { this.keyExtractor } data = { this.props.subjectList } ListEmptyComponent = { this.renderEmpty } 
+                                    renderItem = { this.renderItem } />
+                            </View>) 
+                        } 
+                    </Content>
+                </Container>
+            </SafeAreaView>
+        )
+    } 
+}
+
+function mapStateToProps ( state ) { return { student : state.studentReducer.selectedStudent, subjectList: state.studentReducer.subjectList } }
+
+export default connect ( mapStateToProps ) ( SubjectList )
