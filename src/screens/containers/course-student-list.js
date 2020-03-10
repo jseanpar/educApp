@@ -3,13 +3,13 @@ import { SafeAreaView, BackHandler, FlatList, ActivityIndicator } from 'react-na
 import { Container, Content, ListItem, Body, Text } from 'native-base';
 import { connect } from 'react-redux';
 
-import API from '../../../utils/api';
+import API from '../../../utils/api'
 import Header  from '../../sections/containers/header';
 import HeaderBackButton from '../../sections/components/header-back-button'
-import Empty from '../../videos/components/empty'
+import Empty from '../../sections/components/empty'
 import Student from '../../sections/containers/student'
 
-class SubjectDetail extends Component {
+class CourseStudentList extends Component {
 
     state = { loading: true }
 
@@ -21,10 +21,17 @@ class SubjectDetail extends Component {
     static navigationOptions = () => { return { header: null, } }
 
     async componentDidMount () {
-        const courseStudentList = await API.getStudentListByCourse ( this.props.student.grcu_sec )
-        this.props.dispatch ( { type: 'SET_COURSE_STUDENT_LIST', payload: { courseStudentList } } )
+        await API.getAuth()
+        .then( ( auth ) => {  
+            API.getStudentListByCourse ( auth, this.props.student.grcu_sec )
+            .then( ( courseStudentList ) => {
+                this.props.dispatch ( { type: 'SET_COURSE_STUDENT_LIST', payload: { courseStudentList } } )
+                this.setState ( { loading: false } )
+            } )
+        } )
+        
         BackHandler.addEventListener ( 'hardwareBackPress', this.handleBackButtonClick )
-        this.setState ( { loading: false } )
+       
     }
 
     componentWillUnmount () {
@@ -72,6 +79,6 @@ class SubjectDetail extends Component {
     }
 }
 
-function mapStateToProps ( state ) { return { student : state.studentReducer.selectedStudent, courseStudentList : state.studentReducer.courseStudentList } }
+function mapStateToProps ( state ) { return { student: state.studentReducer.selectedStudent, courseStudentList : state.studentReducer.courseStudentList } }
 
-export default connect ( mapStateToProps ) ( SubjectDetail )
+export default connect ( mapStateToProps ) ( CourseStudentList )

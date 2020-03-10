@@ -7,7 +7,7 @@ import API from '../../../utils/api';
 import Header  from '../../sections/containers/header';
 import HeaderBackButton from '../../sections/components/header-back-button'
 import SudentInfo from '../../sections/containers/student-info';
-import Empty from '../../videos/components/empty'
+import Empty from '../../sections/components/empty'
 import Note from '../components/note'
 
 class NotesList extends Component { 
@@ -22,10 +22,17 @@ class NotesList extends Component {
     static navigationOptions = () => { return { header: null,  } }
 
     async componentDidMount () {
-        const notesList = await API.getNotesListByStudent ( this.props.student.grcu_sec, this.props.student.fial_sec_alum )
-        this.props.dispatch ( { type: 'SET_NOTES_LIST', payload: { notesList } } )
+        await API.getAuth()
+        .then( ( auth ) => {
+            API.getNotesListByStudent ( auth, this.props.student.grcu_sec, this.props.student.fial_sec_alum )
+            .then( ( notesList ) => {
+                this.props.dispatch ( { type: 'SET_NOTES_LIST', payload: { notesList } } )
+                this.setState ( { loading: false } )
+            } )
+        })
+                
         BackHandler.addEventListener ( 'hardwareBackPress', this.handleBackButtonClick )
-        this.setState ( { loading: false } )
+        
     }
 
     componentWillUnmount () {
@@ -55,7 +62,7 @@ class NotesList extends Component {
                         <HeaderBackButton onPress = { () => { this.props.navigation.goBack() } } />
                     </Header>
                     <Content padder>
-                        <SudentInfo />
+                        <SudentInfo navigation = { this.props.navigation } />
                         { this.state.loading ? 
                             <ActivityIndicator color = "#0098D0" size = "large" style = {{flex: 1, justifyContent: 'center', alignItems: 'center', height: 200}} />
                         : 

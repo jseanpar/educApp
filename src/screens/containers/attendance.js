@@ -30,11 +30,16 @@ class Attendance extends Component {
     static navigationOptions = () => { return { header: null } }
     
     componentDidMount = async () => {
-        const attendanceList = await API.getAttendanceListByStudent ( this.props.student.grcu_sec, this.props.student.fial_sec_alum )
-        this.props.dispatch ( { type: 'SET_ATTENDANCE_LIST', payload: { attendanceList } } )
+        await API.getAuth()
+        .then ( ( auth ) => {
+            API.getAttendanceListByStudent ( auth, this.props.student.grcu_sec, this.props.student.fial_sec_alum )
+            .then ( ( attendanceList ) => {
+                this.props.dispatch ( { type: 'SET_ATTENDANCE_LIST', payload: { attendanceList } } )
+                this.setState ( { loading: false } )
+                this.renderAttendance ( attendanceList )
+            } )
+        } )
         BackHandler.addEventListener ( 'hardwareBackPress', this.handleBackButtonClick )
-        this.setState ( { loading: false } )
-        this.renderAttendance ( attendanceList )
     }
 
     componentWillUnmount = () => {
@@ -85,7 +90,7 @@ class Attendance extends Component {
                         <HeaderBackButton onPress = { () => { this.props.navigation.goBack () } } />
                     </Header>
                     <Content padder>
-                        <SudentInfo />
+                        <SudentInfo navigation = { this.props.navigation } />
                         { this.state.loading ? 
                             <ActivityIndicator color = "#0098D0" size = "large" style = {{flex: 1, justifyContent: 'center', alignItems: 'center', height: 200}} />
                         : 

@@ -1,10 +1,15 @@
 import React from 'react'
-import { View } from 'react-native'
-import { Form, Picker, Icon } from 'native-base'
+import { List, ListItem, Body, Text } from 'native-base'
 
 function PeriodLayout ( props ) {
     return (
-        <View></View>
+        <List>
+            <ListItem onPress = { props.onPress } >
+                <Body>
+                    <Text style = { { fontSize: 12 } } >{ props.text }</Text> 
+                </Body>
+            </ListItem>
+        </List>    
     )
 }
 

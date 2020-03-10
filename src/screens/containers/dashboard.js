@@ -1,9 +1,10 @@
-import React, { Component } from 'react';
-import { SafeAreaView, View, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { Component } from 'react'
+import { SafeAreaView, View, StyleSheet, TouchableOpacity } from 'react-native'
 import { connect } from 'react-redux';
-import { Container, Content, Icon, Subtitle } from 'native-base';
+import { Container, Content, Icon, Subtitle } from 'native-base'
 
-import StudentInfo from '../../sections/containers/student-info';
+import API from '../../../utils/api'
+import StudentInfo from '../../sections/containers/student-info'
 import Header from '../../sections/containers/header'
 
 class Dashboard extends Component {
@@ -16,17 +17,21 @@ class Dashboard extends Component {
         return (
             <SafeAreaView style = { { flex:1 } } >
                 <Container>
-                    <Header title = 'Inicio' navigation={this.props.navigation}/>
+                    <Header title = 'Inicio' navigation = { this.props.navigation } />
                     <Content padder>
-                        <StudentInfo />
+                        <StudentInfo navigation = { this.props.navigation } />
                         <View style = { styles.containerFirst } >
                             <TouchableOpacity  style = { styles.btn_notas } onPress = { () => { this.viewModule ( 'SubjectList' ) } } >
-                                <Icon name="md-school" style = { { fontSize: 40, color: '#fff' } } />
                                 <Subtitle>Notas</Subtitle>
+                                <Icon name="md-school" style = { { fontSize: 40, color: '#fff' } } />
+                                <Subtitle>Promedio</Subtitle>
+                                <Subtitle>{ this.props.average[0] ? this.props.average[0].nacu_prom_parc : '0' }</Subtitle>
                             </TouchableOpacity >
                             <TouchableOpacity style = { styles.btn_asistencia } onPress = { () => { this.viewModule ( 'Attendance' ) } } >
-                                <Icon name="md-calendar" style = { { fontSize: 40, color: '#fff' } } />
                                 <Subtitle>Asistencia</Subtitle>
+                                <Icon name="md-calendar" style = { { fontSize: 40, color: '#fff' } } />
+                                <Subtitle>Promedio</Subtitle>
+                                <Subtitle>{ this.props.average[0] ? this.props.average[0].asist_alum : '0%' }</Subtitle>
                             </TouchableOpacity>
                         </View>
                         <View style = { styles.container } >
@@ -39,6 +44,16 @@ class Dashboard extends Component {
                                 <Subtitle>Alumnos del curso</Subtitle>
                             </TouchableOpacity>
                         </View>
+                        <View style = { styles.container } >
+                            <TouchableOpacity  style = { styles.btn_nursing } onPress = { () => { this.viewModule ( 'NursingList' ) } } >
+                                <Icon name="md-medkit" style = { { fontSize: 40, color: '#fff' } } />
+                                <Subtitle>Enfermeria</Subtitle>
+                            </TouchableOpacity >
+                            <TouchableOpacity style = { styles.btn_documents } onPress = { () => { this.viewModule ( 'DocumentList' ) } } >
+                                <Icon name="md-document" style = { { fontSize: 40, color: '#fff' } } />
+                                <Subtitle>Documentos</Subtitle>
+                            </TouchableOpacity>
+                        </View>
                     </Content>
                 </Container>
             </SafeAreaView>   
@@ -47,6 +62,10 @@ class Dashboard extends Component {
 }
 
 const styles = StyleSheet.create ( {
+    letra14Btn: {
+        color: 'white',
+        fontSize: 14,
+    },
     containerFirst: {
         flex: 1,
         flexDirection: 'row',
@@ -72,7 +91,7 @@ const styles = StyleSheet.create ( {
         marginVertical: 4, 
     },
     btn_asistencia: { 
-        backgroundColor: '#00B4D6',  
+        backgroundColor: '#0098D0',  
         width: 140,
         height: 120,
         alignItems: 'center',
@@ -83,7 +102,7 @@ const styles = StyleSheet.create ( {
         marginVertical: 4,
     },
     btn_anotaciones: {
-        backgroundColor: '#41C08B',
+        backgroundColor: '#0098D0',
         width: 140,
         height: 120,
         alignItems: 'center',
@@ -94,7 +113,29 @@ const styles = StyleSheet.create ( {
         marginVertical: 4, 
     },
     btn_alum_curso: {
-        backgroundColor: '#50BEF8',
+        backgroundColor: '#0098D0',
+        width: 140,
+        height: 120,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 2,
+        marginLeft: 4,
+        marginRight: 8,
+        marginVertical: 4,
+    },
+    btn_nursing: {
+        backgroundColor: '#0098D0',
+        width: 140,
+        height: 120,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 2,
+        marginLeft: 8,
+        marginRight: 4,
+        marginVertical: 4, 
+    },
+    btn_documents: {
+        backgroundColor: '#0098D0',
         width: 140,
         height: 120,
         alignItems: 'center',
@@ -106,6 +147,6 @@ const styles = StyleSheet.create ( {
     },
 })
 
-function mapStateToProps ( state ) { return { student: state.studentReducer.selectedStudent } }
+function mapStateToProps ( state ) { return {student : state.studentReducer.selectedStudent, average: state.studentReducer.average } }
 
 export default connect ( mapStateToProps ) ( Dashboard )

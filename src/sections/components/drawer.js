@@ -1,7 +1,9 @@
 import React from 'react';
-import { SafeAreaView, ScrollView, Image, StyleSheet } from 'react-native';
+import { SafeAreaView, ScrollView } from 'react-native';
+import { Header, Subtitle, Left, Right, Thumbnail } from 'native-base'
 import { DrawerNavigatorItems } from 'react-navigation-drawer';
 import { connect } from 'react-redux';
+//import { Header } from 'react-native/Libraries/NewAppScreen';
 
 handleDrawer = ( props ) => {
     switch (props.activeItemKey) {
@@ -19,21 +21,18 @@ function Drawer ( props ) {
     return (
         <ScrollView> 
             <SafeAreaView>
-                <Image source = { require ( '../../../assets/cmds-logo.png' ) } style = { styles.logo } />
+                <Header style = { { backgroundColor: '#0098D0' } }  androidStatusBarColor="#0A74BC" >
+                    <Left>
+                        <Subtitle style = { { marginLeft: 5 } }>Menu</Subtitle>
+                    </Left>
+                    <Right>
+                        <Thumbnail square small source={ require ( '../../../assets/234.png' ) } style = {{resizeMode: 'contain'}} />
+                    </Right>
+                </Header>
             </SafeAreaView>
             <DrawerNavigatorItems { ...props } />
         </ScrollView>
     )
 }
-
-const styles = StyleSheet.create ( {
-    logo: {
-        width: 100, 
-        height: 30,
-        resizeMode: 'contain',
-        marginVertical: 10,
-        marginLeft: 10,
-    }
-})
 
 export default connect ( null ) ( Drawer ) 

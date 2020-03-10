@@ -11,6 +11,10 @@ const persistConfig = {
     blacklist: ['navigation']
 }
 
+const closeSession = () => {
+    AsyncStorage.clear();
+}
+
 const persistedReducer = persistReducer ( persistConfig, reducer )
 
 const navigationMiddleware = createReactNavigationReduxMiddleware ( state => state.navigation )
@@ -21,4 +25,4 @@ const store = createStore (
 )
 const persistor = persistStore ( store )
 
-export { store, persistor };
+export { store, persistor, closeSession };

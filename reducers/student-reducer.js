@@ -9,6 +9,18 @@ function studentReducer ( state = {}, action ) {
             return { ...state, selectedStudent: action.payload.student }
         }
 
+        case 'SET_PERIOD_LIST' : {
+            return { ...state, periodList: action.payload.periodList }
+        }
+
+        case 'SET_SELECTED_PERIOD' : {
+            return { ...state, selectedPeriod: action.payload.selectedPeriod }
+        }
+
+        case 'SET_AVERAGE' : {
+            return { ...state, average: action.payload.average }
+        }
+
         case 'SET_SUBJECT_LIST' : {
             return { ...state, subjectList: action.payload.subjectList }
         }
@@ -26,7 +38,15 @@ function studentReducer ( state = {}, action ) {
         }
 
         case 'SET_COURSE_STUDENT_LIST' : {
-            return { ...state, courseStudentList: action.payload.courseStudentList }
+            return { ...state, ...action.payload }
+        }
+
+        case 'SET_NURSING_LIST' : {
+            return { ...state, nursingList: action.payload.nursingList }
+        }
+
+        case 'SET_DOCUMENT_LIST' : {
+            return { ...state, documentList: action.payload.documentList }
         }
 
         default : 

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
 
+import API from '../../../utils/api';
 import LoadingLayout from '../../sections/components/loading'
 
 class Loading extends Component {
@@ -14,7 +15,7 @@ class Loading extends Component {
         }
     }
     render () {
-        return  (
+        return (
             <LoadingLayout />
         )   
     }

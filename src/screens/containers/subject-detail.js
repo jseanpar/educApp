@@ -38,7 +38,7 @@ class SubjectDetail extends Component {
                         <HeaderBackButton onPress = { () => { this.props.navigation.goBack() } } />
                     </Header>
                     <Content padder>    
-                        <SudentInfo />
+                        <SudentInfo navigation = { this.props.navigation } />
                         <ListItem>
                             <Body style = { { justifyContent: 'center', alignItems: 'center' } } >
                                 <Text style = { { fontSize: 12 } }>{ this.props.subject.asig_descripcion }</Text>

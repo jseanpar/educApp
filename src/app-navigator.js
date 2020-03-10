@@ -1,27 +1,37 @@
 import React from 'react'
 import { createAppContainer, createSwitchNavigator } from 'react-navigation'
-import { createDrawerNavigator } from 'react-navigation-drawer';
+import { createDrawerNavigator } from 'react-navigation-drawer'
 import { createStackNavigator } from 'react-navigation-stack'
-
+import { Icon } from 'native-base'
 import Loading from './screens/containers/loading'
 import Login from './screens/containers/login'
+import MessageList from './screens/containers/message-list'
 import StudentList from './screens/containers/student-list'
+import ChangePassword from './screens/containers/change-password'
+import CloseSession from './screens/containers/close-session' 
+import PeriodList from './screens/containers/period-list'
 import Dashboard from './screens/containers/dashboard'
 import SubjectList from './screens/containers/subject-list'
 import SubjectDetail from './screens/containers/subject-detail'
 import Attendance from './screens/containers/attendance'
 import NotesList from './screens/containers/notes-list'
 import CourseStudentList from './screens/containers/course-student-list'
-import DrawerComponent from './sections/components/drawer';
+import NursingList from './screens/containers/nursing-list'
+import DocumentList from './screens/containers/document-list'
+import DrawerComponent from './sections/components/drawer'
 
 const Main = createStackNavigator ( {
-    Dashboard : Dashboard,
     StudentList: StudentList,
+    MessageList: MessageList,
+    PeriodList: PeriodList,
+    Dashboard : Dashboard,
     SubjectList : SubjectList,
     SubjectDetail : SubjectDetail, 
     Attendance: Attendance, 
     NotesList: NotesList,
-    CourseStudentList, CourseStudentList
+    CourseStudentList: CourseStudentList,
+    NursingList: NursingList,
+    DocumentList: DocumentList
 },
 {
     defaultNavigationOptions: {
@@ -43,56 +53,55 @@ const DrawerNavigation = createDrawerNavigator ( {
         screen: Main,
         navigationOptions: {
             title: 'Inicio',
-         // drawerIcon: <Icon
-         // name="home"
-         // size={15} 
-         // color='#92c93d' 
-      ///>
+            //drawerIcon: <Icon name="ios-home" style = { { fontSize: 16, color: '#0098D0' } } />,
+            drawerLabel: () => null
         }
     }, 
     StudentList: {
         screen: StudentList,
         navigationOptions:{
-            title: 'Seleccion de alumno',
-            drawerLockMode: 'locked-closed',
+            title: 'Alumnos',
+            drawerIcon: <Icon name = "ios-people" style = { { fontSize: 16, color: '#0098D0' } } />
         }
     },
-    Dashboard: {
-        screen: Dashboard
+    ChangePassword: {
+        screen: ChangePassword,
+        navigationOptions:{
+            title: 'Cambiar Password',
+            drawerIcon: <Icon name = "md-key" style = { { fontSize: 16, color: '#0098D0' } } />
+        }
     },
     Login: {
-        screen: Login,
+        screen: CloseSession,
         navigationOptions: {
             title: 'Cerrar sesión',
-           // drawerIcon: <Icon
-           // name="home"
-           // size={15} 
-           // color='#92c93d' 
-        ///>
+            drawerIcon: <Icon name = "md-power" style = { { fontSize: 16, color: '#0098D0' } } />
         }
     }
 },
 {
-    drawerWidth: 200,
-    drawerBackgroundColor: '#f6f6f6',
+    drawerWidth: 180,
+    drawerBackgroundColor: '#fff',
     drawerPosition: 'right',
     drawerType: 'slide',
     keyboardDismissMode: 'none',
     contentComponent: DrawerComponent,
     contentOptions: {
-        activeBackgroundColor: '#36a3f7', 
-        activeTintColor: 'white',
-        inactiveTintColor: '#828282',
-        inactiveBackgroundColor: 'white',
+        activeBackgroundColor: '#eaeaeb', 
+        activeTintColor: '#0098D0',
+        inactiveTintColor: '#8e8e93',
+        inactiveBackgroundColor: '#fff',
         itemStyle: {
-            borderBottomWidth: .5,
-            borderBottomColor: '#eaeaeb',
+            //borderBottomWidth: .5,
+            //borderBottomColor: '#eaeaeb',
         }, 
         labelStyle: {
+            fontFamily: 'Roboto',
+            
             marginHorizontal: 0,
         },
         iconContainerStyle: {
-            marginHorizontal: 5,
+            marginHorizontal: 4,
         }
     }
 })
@@ -100,12 +109,11 @@ const DrawerNavigation = createDrawerNavigator ( {
 const SwitchNavigator = createSwitchNavigator (
     {
         App: DrawerNavigation,
-        StudentList: StudentList,
         Login: Login,
         Loading: Loading,
     },
     {
-        initialRouteName: 'Loading',
+        initialRouteName: 'Login', 
     }
 )
 

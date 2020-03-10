@@ -8,8 +8,8 @@ import API from '../../../utils/api'
 import Header  from '../../sections/containers/header'
 import HeaderBackButton from '../../sections/components/header-back-button'
 import SudentInfo from '../../sections/containers/student-info'
-import Empty from '../../videos/components/empty'
-import Subject from '../../videos/components/subject'
+import Empty from '../../sections/components/empty'
+import Subject from '../../sections/components/subject'
 
 
 class SubjectList extends Component {
@@ -24,10 +24,15 @@ class SubjectList extends Component {
     static navigationOptions = () => { return { header: null, } }
 
     async componentDidMount () {
-        const subjectList = await API.getSubjectListByStudent ( this.props.student.grcu_sec, this.props.student.fial_sec_alum )
-        this.props.dispatch ( { type: 'SET_SUBJECT_LIST', payload: { subjectList } } )
+        await API.getAuth()
+        .then ( ( auth ) => {
+            API.getSubjectListByStudent ( auth, this.props.student.grcu_sec, this.props.student.fial_sec_alum, this.props.selectedPeriod.id )
+            .then( ( subjectList ) => {
+                this.props.dispatch ( { type: 'SET_SUBJECT_LIST', payload: { subjectList } } )
+                this.setState ( { loading: false } )
+            } )
+        } )
         BackHandler.addEventListener ( 'hardwareBackPress', this.handleBackButtonClick )
-        this.setState ( { loading: false } )
     }
 
     componentWillUnmount () {
@@ -48,7 +53,7 @@ class SubjectList extends Component {
 
     renderItem = ( { item } ) => { 
         return(
-            <Subject {...item} onPress={ () => { this.subjectPress ( item ) } } />
+            <Subject {...item} onPress = { () => { this.subjectPress ( item ) } } />
         ) 
     }
 
@@ -60,7 +65,7 @@ class SubjectList extends Component {
                         <HeaderBackButton onPress = { () => { this.props.navigation.goBack() } } />
                     </Header>
                     <Content padder>
-                        <SudentInfo />
+                        <SudentInfo navigation = { this.props.navigation } />
                         { this.state.loading ? 
                             <ActivityIndicator color = "#0098D0" size = "large" style = { { flex: 1, justifyContent: 'center', alignItems: 'center', height: 200 } } />
                         : 
@@ -76,6 +81,6 @@ class SubjectList extends Component {
     } 
 }
 
-function mapStateToProps ( state ) { return { student : state.studentReducer.selectedStudent, subjectList: state.studentReducer.subjectList } }
+function mapStateToProps ( state ) { return { student : state.studentReducer.selectedStudent, subjectList: state.studentReducer.subjectList, selectedPeriod: state.studentReducer.selectedPeriod } }
 
 export default connect ( mapStateToProps ) ( SubjectList )

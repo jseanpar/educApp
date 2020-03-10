@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, StyleSheet, SafeAreaView, Image, TouchableOpacity, ImageBackground, ActivityIndicator, Alert, StatusBar } from 'react-native';
+import { View, Text, TextInput, StyleSheet, SafeAreaView, Image, TouchableOpacity, ImageBackground, ActivityIndicator, Alert, StatusBar, AsyncStorage } from 'react-native';
 import { connect } from 'react-redux';
+import OneSignal from 'react-native-onesignal';
 
 import API from '../../../utils/api';
 
@@ -13,39 +14,54 @@ class Login extends Component {
     }
 
     handleLogin = async () => {
-        if ( typeof this.state.userName === 'undefined')  {
+        this.setState ( { loading: true } )
+        if ( ( typeof this.state.userName === 'undefined') || ( this.state.userName === '' ) ) {
+            this.setState ( { loading: false } )
             this.showMessage('Atención', 'Debe ingresar el usuario.')
         }
         else {
-            if ( typeof this.state.password === 'undefined' )  {
+            if ( ( typeof this.state.password === 'undefined' ) || ( this.state.password === '' ) ) {
+                this.setState ( { loading: false } )
                 this.showMessage('Atención', 'Debe ingresar la contraseña.')
             }
             else {
-                this.setState ( { loading: true } )
-                const userData = await API.getUserData ( this.state.userName )
-                this.setState ( { loading: false } )
-                if ( typeof userData !== 'undefined' ) {
-                    //if ( userData[0].uspo_clave == this.state.password ) {
-                    if ( userData[0].uspo_clave ) {
-                        const token = 'ABCDEFGHIJK';
-                        this.props.dispatch ( { 
-                            type: 'SET_USER', 
-                            payload: { 
-                                token, userId: userData[0].pers_sec, userCardId: userData[0].uspo_usuarios, userName: 'user name', userBlocked: userData[0].uspo_bloqueo, 
-                                userNew: userData[0].uspo_es_nuevo, userType: userData[0].uspo_tipo_usua, 
+                await API.getAuth()
+                .then( ( auth ) => {
+                    API.getUserData ( auth, this.state.userName )
+                    .then( ( userData ) => {
+                        if ( typeof userData !== 'undefined' ) {
+                            //if ( userData[0].uspo_clave == this.state.password ) {
+                            if ( userData[0].uspo_clave ) {
+                                this.props.dispatch ({ 
+                                    type: 'SET_USER', 
+                                    payload: { 
+                                        userId: userData[0].pers_sec, userCardId: userData[0].uspo_usuarios, userName: 'user name', userBlocked: userData[0].uspo_bloqueo, 
+                                        userNew: userData[0].uspo_es_nuevo, userType: userData[0].uspo_tipo_usua, 
+                                    }
+                                })
+                                OneSignal.sendTags({ 
+                                    userId: userData[0].pers_sec, userCardId: userData[0].uspo_usuarios, userName: 'user name', userBlocked: userData[0].uspo_bloqueo, 
+                                    userNew: userData[0].uspo_es_nuevo, userType: userData[0].uspo_tipo_usua, 
+                                })
+                                 
+                                if(userData[0].uspo_es_nuevo == 'S'){
+                                    this.props.navigation.navigate ( 'ChangePassword' )
+                                } else{
+                                    this.setState ( { loading: false } )
+                                    this.props.navigation.navigate ( 'Loading' )
+                                }
+                            } 
+                            else {
+                                this.setState ( { loading: false } )
+                                this.showMessage ( 'Atención', 'Datos incorrectos, intente nuevamente.' )
                             }
-                        } )
-                        const studentList = await API.getStudentListByUser ( userData[0].pers_sec )                        
-                        this.props.dispatch( { type: 'SET_STUDENT_LIST', payload: { studentList } } )
-                        this.props.navigation.navigate ( 'Loading' )
-                    } 
-                    else {
-                        this.showMessage ( 'Atención', 'Datos incorrectos, intente nuevamente.' )
-                    }
-                }   
-                else {
-                    this.showMessage ( 'Atención', 'Datos incorrectos, intente nuevamente.' )
-                }
+                        }   
+                        else {
+                            this.setState ( { loading: false } )
+                            this.showMessage ( 'Atención', 'Datos incorrectos, intente nuevamente.' )
+                        }
+                    })
+                } )
             }    
         }
     }
@@ -66,11 +82,11 @@ class Login extends Component {
                         </View>
                         <View style = { styles.inputWrapper } >
                             <Image source = { require ('../../../assets/username.png') } style = { styles.inlineImg } />
-                            <TextInput onChangeText={(text) => { this.setState({ userName: text }) } } style = { styles.input } placeholder = "Nombre de usuario" placeholderTextColor = "white" underlineColorAndroid = "transparent" />
+                            <TextInput onChangeText = { ( text ) => { this.setState ( { userName: text } ) } } style = { styles.input } placeholder = "Nombre de usuario" placeholderTextColor = "white" underlineColorAndroid = "transparent" />
                         </View>
                         <View style = { styles.inputWrapper } >
                             <Image source = { require ('../../../assets/password.png') } style = { styles.inlineImg } />
-                            <TextInput onChangeText={(text) => { this.setState({ password: text }) } } style = { styles.input } placeholder = "Contraseña" placeholderTextColor = "white" secureTextEntry = { true } />
+                            <TextInput onChangeText = { ( text ) => { this.setState ( { password: text } ) } } style = { styles.input } placeholder = "Contraseña" placeholderTextColor = "white" secureTextEntry = { true } />
                         </View>
                         <TouchableOpacity onPress = { this.handleLogin } style = { styles.button } >
                             <Text style = { styles.buttonLabel } >
@@ -182,4 +198,6 @@ const styles = StyleSheet.create({
     }
 })
 
-export default connect ( null ) ( Login ) 
+function mapStateToProps ( state ) { return { auth: state.authReducer } }
+
+export default connect ( mapStateToProps ) ( Login ) 

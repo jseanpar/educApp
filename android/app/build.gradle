@@ -197,6 +197,8 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-onesignal')
+    implementation project(':rn-fetch-blob')
     implementation 'com.android.support:design:27.1.0'
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.facebook.react:react-native:+"  // From node_modules

@@ -1,5 +1,5 @@
 {
-  "name": "educaPortal",
+  "name": "EducApp",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -17,6 +17,7 @@
     "react-native-dashboard": "0.0.4",
     "react-native-elements": "^1.2.5",
     "react-native-gesture-handler": "^1.4.1",
+    "react-native-onesignal": "^3.6.4",
     "react-native-reanimated": "^1.3.0",
     "react-native-screen": "0.0.1",
     "react-native-screens": "^2.0.0-alpha.3",
@@ -32,7 +33,8 @@
     "react-navigation-tabs": "^2.5.5",
     "react-redux": "^7.1.1",
     "redux": "^4.0.4",
-    "redux-persist": "^6.0.0"
+    "redux-persist": "^6.0.0",
+    "rn-fetch-blob": "^0.12.0"
   },
   "devDependencies": {
     "@babel/core": "7.5.5",
