@@ -1,4 +1,5 @@
 import React from 'react'
+import { Platform } from 'react-native'
 import { List, ListItem, Left, Body, Right, Thumbnail, Text, Badge } from 'native-base'
 
 renderRightPanel = ( props ) => {
@@ -11,16 +12,16 @@ renderRightPanel = ( props ) => {
         return (
             <Right style = { { position: 'absolute', right: 5, top: 30 } }>
                 <Badge style = { { backgroundColor: '#0098D0' , justifyContent: 'center', alignItems: 'center', width: 28, height: 20 } } >
-                    <Text style = { { fontSize: 8 } } >{ props.alcu_orden }</Text>
+                    <Text style = { { fontSize: 8, top: Platform.OS === 'ios' ? -3 : 0 } } >{ props.alcu_orden }</Text>
                 </Badge>
             </Right>
         )
     }
     else {
         return (
-             <Right style = { { position: 'absolute', right: 5, top: 30  } }>
+             <Right style = { { position: 'absolute', right: 5, top: 30 } }>
                 <Badge danger style = { { justifyContent: 'center', alignItems: 'center', width: 28, height: 20 } } >
-                    <Text style = { { fontSize: 8 } } >{ props.alcu_orden }</Text>
+                    <Text style = { { fontSize: 8, top: Platform.OS === 'ios' ? -3 : 0 } } >{ props.alcu_orden }</Text>
                 </Badge>
             </Right>
         )

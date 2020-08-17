@@ -6,8 +6,24 @@ function userReducer ( state = {}, action) {
             return {...action.payload}
         }
 
+        case 'SET_PROFILE' : {
+            return { ...state, profile: action.payload.profile }
+        }
+
+        case 'SET_PROFILE_NAME' : {
+            return { ...state, profileName: action.payload }
+        }
+
         case 'REMOVE_USER' : {
             return false
+        }
+
+        case 'SET_NOTIFICATION' : {
+            return { ...state, notification: action.payload.notification}
+        }
+
+        case 'REMOVE_NOTIFICATION' : {
+            return { ...state, notification: undefined }
         }
 
         case 'SET_MESSAGE_LIST' : {
@@ -19,4 +35,4 @@ function userReducer ( state = {}, action) {
     }
 }
 
-export default userReducer;
+export default userReducer

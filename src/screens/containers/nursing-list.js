@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
-import { SafeAreaView, FlatList, BackHandler, ActivityIndicator } from 'react-native'
-import { Container, Content } from 'native-base';
+import { FlatList, BackHandler, ActivityIndicator, View } from 'react-native'
+import { Container } from 'native-base'
 import { connect } from 'react-redux'
 
-import API from '../../../utils/api';
-import Header  from '../../sections/containers/header';
+import API from '../../../utils/api'
+import Header  from '../../sections/containers/header'
 import HeaderBackButton from '../../sections/components/header-back-button'
-import SudentInfo from '../../sections/containers/student-info';
+import SudentInfo from '../../sections/containers/student-info'
 import Empty from '../../sections/components/empty'
 import Nursing from '../components/nursing'
 
@@ -56,22 +56,20 @@ class NursingList extends Component {
     
     render() {
         return (
-            <SafeAreaView style = { { flex:1 } } >
-                <Container>
-                    <Header navigation = { this.props.navigation } title = 'Enfermeria' >
-                        <HeaderBackButton onPress = { () => { this.props.navigation.goBack() } } />
-                    </Header>
-                    <Content padder>
-                        <SudentInfo navigation = { this.props.navigation } />
-                        { this.state.loading ? 
-                            <ActivityIndicator color = "#0098D0" size = "large" style = {{flex: 1, justifyContent: 'center', alignItems: 'center', height: 200}} />
-                        : 
-                            (<FlatList keyExtractor = { this.keyExtractor } data = { this.props.nursingList } ListEmptyComponent = { this.renderEmpty } 
-                                renderItem = { this.renderItem } />) 
-                        } 
-                    </Content>
-                </Container>
-            </SafeAreaView>
+            <Container>
+                <Header title = 'Enfermeria' navigation = { this.props.navigation } showMenu = { true } >
+                    <HeaderBackButton onPress = { () => { this.props.navigation.goBack() } } />
+                </Header>
+                <View style={{ flex: 1, margin: 10 }}>
+                    <SudentInfo navigation = { this.props.navigation } />
+                    { this.state.loading ? 
+                        <ActivityIndicator color = "#0098D0" size = "large" style = {{flex: 1, justifyContent: 'center', alignItems: 'center', height: 200}} />
+                    : 
+                        (<FlatList keyExtractor = { this.keyExtractor } data = { this.props.nursingList } ListEmptyComponent = { this.renderEmpty } 
+                            renderItem = { this.renderItem } />) 
+                    } 
+                </View>
+            </Container>
         )
     }
 }

@@ -1,5 +1,5 @@
 import React from 'react'
-import { List, ListItem, Card, CardItem, Left, Body, Right, Text, Icon, View } from 'native-base';
+import { List, ListItem, Body, Right, Text, Icon, View } from 'native-base';
 
 function Nursing ( props ) {
     return (
@@ -14,7 +14,7 @@ function Nursing ( props ) {
                     <Text style = { { fontSize: 10 } }>Tratamiento: { props.encu_obs_tratamiento }</Text>
                 </Body>
                 <Right>
-                    <Text note style = { { fontSize: 8 } }>{ props.date } {props.encu_hora_atencion}</Text>
+                    <Text note style = { { fontSize: 8 } }>{ props.date } { props.encu_hora_atencion }</Text>
                 </Right>
             </ListItem>
         </List>

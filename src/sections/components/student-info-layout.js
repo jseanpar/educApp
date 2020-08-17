@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, TouchableOpacity } from 'react-native'
+import { Platform, View, TouchableOpacity } from 'react-native'
 import { List, ListItem, Left, Right, Body, Thumbnail, Text, Badge, Icon } from 'native-base'
 
 function StudentInfoLayout ( props ) {
@@ -23,9 +23,9 @@ function StudentInfoLayout ( props ) {
             </List>
             <Right style = { { position: 'absolute', right: 5, top: 0 } } >
                 <TouchableOpacity onPress = { props.onPress } hitSlop = { { left: 5, top: 5, bottom: 5, right: 5 } } >
-                    <Badge style = { { flex: 1, flexDirection: 'row', backgroundColor: '#DDA01E' , justifyContent: 'center', alignItems: 'center', width: 70, height: 16 } }>
-                    <Text style = { { fontSize: 8 } } >{ props.selectedPeriod.text }</Text>
-                        <Icon name = 'md-sync' style = { { fontSize: 10, color: '#fff' } } /> 
+                    <Badge style = { { flex: 1, flexDirection: 'row', backgroundColor: '#DDA01E' , justifyContent: 'center', alignItems: 'center', width: 74, height: 18 } }>
+                        <Text style = { { fontSize: 8, top: Platform.OS === 'ios' ? -3 : 0 } } >{ props.selectedPeriod.text }</Text>
+                        <Icon name = 'md-sync' style = { { fontSize: 10, color: '#fff', top: 1 } } /> 
                     </Badge>
                 </TouchableOpacity>
             </Right>

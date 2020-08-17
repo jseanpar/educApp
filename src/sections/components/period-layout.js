@@ -1,5 +1,5 @@
 import React from 'react'
-import { List, ListItem, Body, Text } from 'native-base'
+import { List, ListItem, Body, Text, Right } from 'native-base'
 
 function PeriodLayout ( props ) {
     return (

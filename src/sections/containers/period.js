@@ -5,7 +5,7 @@ import PeriodLayout from '../components/period-layout'
 class Period extends Component {
     render () {
         return (
-            <PeriodLayout {...this.props} onPress = { this.props.onPress }  />
+            <PeriodLayout {...this.props} onPress = { this.props.onPress } />
         )
     }
 }

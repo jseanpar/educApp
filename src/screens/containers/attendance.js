@@ -1,13 +1,13 @@
 import React, { Component } from 'react'
-import { SafeAreaView, BackHandler, View, ActivityIndicator } from 'react-native';
-import { Container, Content, Text, Badge } from 'native-base';
-import { connect } from 'react-redux';
+import { BackHandler, View, ActivityIndicator } from 'react-native'
+import { Container, Button, Text, Badge } from 'native-base'
+import { connect } from 'react-redux'
 import { Calendar, LocaleConfig } from 'react-native-calendars'
 
-import API from '../../../utils/api';
-import Header  from '../../sections/containers/header';
+import API from '../../../utils/api'
+import Header  from '../../sections/containers/header'
 import HeaderBackButton from '../../sections/components/header-back-button'
-import SudentInfo from '../../sections/containers/student-info';
+import SudentInfo from '../../sections/containers/student-info'
 
 LocaleConfig.locales['es'] = {
     monthNames: ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],
@@ -73,7 +73,7 @@ class Attendance extends Component {
         }
     }
 
-    renderAttendance = ( attendanceList ) =>  {
+    renderAttendance = ( attendanceList ) => {
         var dataArray = []
         for ( var o in attendanceList ) {
             dataArray.push ( [attendanceList[o].ascu_fec_asistencia.substring ( 0, 10 ), this.getColor( attendanceList[o].ascu_asistencia ) ] )
@@ -84,36 +84,32 @@ class Attendance extends Component {
 
     render() {
         return (
-            <SafeAreaView style = { { flex:1 } } >
-                <Container>
-                    <Header navigation = { this.props.navigation } title = 'Asistencia' >
-                        <HeaderBackButton onPress = { () => { this.props.navigation.goBack () } } />
-                    </Header>
-                    <Content padder>
-                        <SudentInfo navigation = { this.props.navigation } />
-                        { this.state.loading ? 
-                            <ActivityIndicator color = "#0098D0" size = "large" style = {{flex: 1, justifyContent: 'center', alignItems: 'center', height: 200}} />
-                        : 
-                            <View>
-                                <Calendar firstDay={1} markedDates = { this.state.marked } />
-                                <View style = { { flex: 1, flexDirection: 'row', marginTop: 10, justifyContent: 'center', alignItems: 'center' } } >
-                                    <Badge style = { { justifyContent: 'center', alignItems: 'center', backgroundColor: '#33C191', margin: 4 } } ><Text>Presente</Text></Badge>
-                                    <Badge style = { { justifyContent: 'center', alignItems: 'center', backgroundColor: '#C54240', margin: 4 } } ><Text>Ausente</Text></Badge>
-                                    <Badge style = { { justifyContent: 'center', alignItems: 'center', backgroundColor: '#F9F871', margin: 4 } } ><Text>Feriado</Text></Badge>
-                                </View>
-                                <View style = { { flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' } } >
-                                    <Badge style = { { justifyContent: 'center', alignItems: 'center', backgroundColor: '#0098D0', margin: 4 } } ><Text>Pendiente</Text></Badge>
-                                    <Badge style = { { justifyContent: 'center', alignItems: 'center', backgroundColor: '#76FAC7', margin: 4 } } ><Text>No aplica</Text></Badge>
-                                </View>
+            <Container>
+                <Header title = 'Asistencia' navigation = { this.props.navigation } showMenu = { true } >
+                    <HeaderBackButton onPress = { () => { this.props.navigation.goBack () } } />
+                </Header>
+                <View style={{ flex: 1, margin: 10 }}>
+                    <SudentInfo navigation = { this.props.navigation } />
+                    { this.state.loading ? 
+                        <ActivityIndicator color = "#0098D0" size = "large" style = {{flex: 1, justifyContent: 'center', alignItems: 'center', height: 200}} />
+                    : 
+                        <View style = { { flex: 1 } } >
+                            <Calendar firstDay={1} markedDates = { this.state.marked } />
+                            <View style = { { marginLeft: 15, marginRight: 15, marginTop: 10 } } >
+                                <Button style = { { justifyContent: 'center', alignItems: 'center', backgroundColor: '#33C191', margin: 2 } }><Text>Presente</Text></Button>
+                                <Button style = { { justifyContent: 'center', alignItems: 'center', backgroundColor: '#C54240', margin: 2 } }><Text>Ausente</Text></Button>
+                                <Button style = { { justifyContent: 'center', alignItems: 'center', backgroundColor: '#F9F871', margin: 2 } }><Text>Feriado</Text></Button>
+                                <Button style = { { justifyContent: 'center', alignItems: 'center', backgroundColor: '#0098D0', margin: 2 } }><Text>Pendiente</Text></Button>
+                                <Button style = { { justifyContent: 'center', alignItems: 'center', backgroundColor: '#76FAC7', margin: 2 } }><Text>No aplica</Text></Button>
                             </View>
-                        }
-                    </Content>
-                </Container>
-            </SafeAreaView>
+                        </View>
+                    }
+                </View>
+            </Container>
         )
     }
 }
 
 function mapStateToProps ( state ) { return { student : state.studentReducer.selectedStudent, attendanceList: state.studentReducer.attendanceList } }
 
-export default connect ( mapStateToProps ) ( Attendance );
+export default connect ( mapStateToProps ) ( Attendance )

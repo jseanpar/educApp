@@ -1,5 +1,5 @@
 import React from 'react'
-import { List, ListItem, Body, Right, Text, Icon } from 'native-base';
+import { List, ListItem, Body, Right, Text, Icon } from 'native-base'
 
 function Note ( props ) {
     return (

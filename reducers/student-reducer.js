@@ -54,4 +54,4 @@ function studentReducer ( state = {}, action ) {
     }
 }
 
-export default studentReducer;
+export default studentReducer

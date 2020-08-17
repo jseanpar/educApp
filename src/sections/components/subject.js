@@ -1,5 +1,5 @@
-import React from 'react';
-import { ListItem, Text, Icon, Body, Right, Badge } from 'native-base';
+import React from 'react'
+import { ListItem, Text, Icon, Body, Right, Badge } from 'native-base'
 
 renderBadge = (average) => {
     if ( ( parseInt ( average ) > 0  && parseInt ( average ) < 4 ) || ( average == 'I' ) ) {

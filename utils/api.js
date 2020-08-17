@@ -1,9 +1,10 @@
-//const BASE_API_PAD = 'http://10.71.249.55:8080/adm_educa/Med_get_lista_curso?p_grcu_sec=5016';
-//const BASE_API_URL = 'http://10.71.249.55:8080/adm_educa/'
 const BASE_API_URL = 'https://cmdseducapp.pad.cl:3443/'
-const BASE_PATH_URL = 'cmdsrest/adm_educa/'
-
+const BASE_PATH_URL = 'cmdsprod/adm_educa/'
 const CONTENT_TYPE = 'application/x-www-form-urlencoded;charset=UTF-8'
+
+import { Platform } from 'react-native'
+import RNFetchBlob from 'rn-fetch-blob'
+
 function getAccesEviroment ( ) {
     credentials = {
         'grant_type': 'client_credentials',
@@ -36,23 +37,22 @@ class Api {
     }
     
     //Login
-    //Get user data by user name
-    async getUserData ( p_auth, p_userName ) {
+    //Get userlogin data by user name
+    async getUserLogin ( p_auth, p_userName ) {
         const AUTHORIZATION = `${p_auth.token_type} ${p_auth.access_token}`
         const PATH = 'Med_get_datos_usuario'
         const result = await fetch( `${ BASE_API_URL }${ BASE_PATH_URL }${ PATH }?p_uspo_usuarios=${ p_userName }`, {
-            method: 'POST',
-            headers: { Authorization: AUTHORIZATION, 'Content-Type': CONTENT_TYPE },
-            body: getAccesEviroment ( )
+            method: 'GET',
+            headers: { Authorization: AUTHORIZATION, 'Content-Type': CONTENT_TYPE } 
         })
-        .then( async ( query ) =>  await query.json ( ) )
-        .catch ( error => console.log ( 'error', error ) ) 
+        .then( async ( query ) => await query.json ( ) )
+        .catch ( error => console.log ( 'error', error ) )
         return result.retorno
     }
 
     //Update password
     //Change user password 
-    async postUserPassword ( p_auth, p_userName, p_password, p_usernew) {
+    async updateUserPassword ( p_auth, p_userName, p_password, p_usernew) {
         const AUTHORIZATION = `${p_auth.token_type} ${p_auth.access_token}`
         const PATH = 'Med_upd_clave_usua_portal'
         const result = await fetch( `${ BASE_API_URL }${ BASE_PATH_URL }${ PATH }?p_uspo_usuarios=${ p_userName }&p_uspo_clave=${p_password}&p_uspo_es_nuevo=${p_usernew}`, {
@@ -65,15 +65,44 @@ class Api {
         return result
     }
 
+    //Profile
+    //Get user profile 
+    async getUserProfile ( p_auth, p_userType, p_school, p_studentId, p_userId ) {
+        const AUTHORIZATION = `${p_auth.token_type} ${p_auth.access_token}`
+        const PATH = 'Med_get_datos_usua_portal'
+        const result = await fetch( `${ BASE_API_URL }${ BASE_PATH_URL }${ PATH }?p_uspo_tipo_usua=${ p_userType }&p_esed_sec=${ p_school }&p_fial_sec=${ p_studentId }&p_pers_sec=${ p_userId }`, {
+            method: 'GET',
+            headers: { Authorization: AUTHORIZATION, 'Content-Type': CONTENT_TYPE } 
+        })
+        .then( async ( query ) =>  await query.json ( ) )
+        .catch ( error => console.log ( 'error', error ) ) 
+        return result.retorno
+    }
+
+    //Profile
+    //Update user data
+    async updateUserData ( p_auth, p_userType, p_school, p_studentId, p_userId, p_phone, p_cellPhone, p_email) {
+        const AUTHORIZATION = `${p_auth.token_type} ${p_auth.access_token}`
+        const PATH = 'Med_upd_datos_usua_portal'
+        const result = await fetch( `${ BASE_API_URL }${ BASE_PATH_URL }${ PATH }?p_uspo_tipo_usua=${ p_userType }&p_esed_sec=${ p_school }&p_fial_sec=${ p_studentId }&p_pers_sec=${ p_userId }&p_fono=${ p_phone }&p_celular=${ p_cellPhone }&p_email=${ p_email }`, {
+            method: 'POST',
+            headers: { Authorization: AUTHORIZATION, 'Content-Type': CONTENT_TYPE },
+            body: getAccesEviroment ( )
+        })
+        .then( async ( query ) =>  await query.json ( ) )
+        .catch ( error => console.log ( 'error', error ) ) 
+        console.log(result)
+        return result
+    }
+
     //Messages list
     //Get message list by user
     async getMessageListByUser ( p_auth, p_userCardId ) {
         const AUTHORIZATION = `${p_auth.token_type} ${p_auth.access_token}`
         const PATH = 'Med_get_datos_mensajeria'
         const result = await fetch( `${ BASE_API_URL }${ BASE_PATH_URL }${ PATH }?p_usua_usuarios=${ p_userCardId }`, {
-            method: 'POST',
-            headers: { Authorization: AUTHORIZATION, 'Content-Type': CONTENT_TYPE },
-            body: getAccesEviroment ( )
+            method: 'GET',
+            headers: { Authorization: AUTHORIZATION, 'Content-Type': CONTENT_TYPE } 
         })
         .then( async ( query ) =>  await query.json ( ) )
         .catch ( error => console.log ( 'error', error ) )
@@ -86,9 +115,8 @@ class Api {
         const AUTHORIZATION = `${p_auth.token_type} ${p_auth.access_token}`
         const PATH = 'Med_get_datos_alumnos'
         const result = await fetch( `${ BASE_API_URL }${ BASE_PATH_URL }${ PATH }?p_pers_sec=${ p_userId }`, {
-            method: 'POST',
-            headers: { Authorization: AUTHORIZATION, 'Content-Type': CONTENT_TYPE },
-            body: getAccesEviroment ( )
+            method: 'GET',
+            headers: { Authorization: AUTHORIZATION, 'Content-Type': CONTENT_TYPE }
         })
         .then( async ( query ) =>  await query.json ( ) )
         .catch ( error => console.log ( 'error', error ) ) 
@@ -101,11 +129,10 @@ class Api {
         const AUTHORIZATION = `${p_auth.token_type} ${p_auth.access_token}`
         const PATH = 'Med_get_imagb24_alumno'
         const result = await fetch( `${ BASE_API_URL }${ BASE_PATH_URL }${ PATH }?p_fafo_cod_clave=${ p_studentCode }`, {
-            method: 'POST',
-            headers: { Authorization: AUTHORIZATION, 'Content-Type': CONTENT_TYPE },
-            body: getAccesEviroment ( )
+            method: 'GET',
+            headers: { Authorization: AUTHORIZATION, 'Content-Type': CONTENT_TYPE } 
         })
-        .then( async ( query ) =>  await query.json ( ) )
+        .then( async ( query ) => await query.json ( ) )
         .catch ( error => console.log ( 'error', error ) ) 
         return result.retorno
     }
@@ -145,9 +172,8 @@ class Api {
         const AUTHORIZATION = `${p_auth.token_type} ${p_auth.access_token}`
         const PATH = 'Med_get_prom_asist_alum'
         const result = await fetch( `${ BASE_API_URL }${ BASE_PATH_URL }${ PATH }?p_grcu_sec=${ p_course }&p_fial_sec=${ p_studentId }&p_nacu_tipo_peri=${ p_selectedPeriod }`, {
-            method: 'POST',
-            headers: { Authorization: AUTHORIZATION, 'Content-Type': CONTENT_TYPE },
-            body: getAccesEviroment ( )
+            method: 'GET',
+            headers: { Authorization: AUTHORIZATION, 'Content-Type': CONTENT_TYPE }
         })
         .then( async ( query ) =>  await query.json ( ) )
         .catch ( error => console.log ( 'error', error ) ) 
@@ -160,9 +186,8 @@ class Api {
         const AUTHORIZATION = `${p_auth.token_type} ${p_auth.access_token}`
         const PATH = 'Med_get_notas_alumno'
         const result = await fetch( `${ BASE_API_URL }${ BASE_PATH_URL }${ PATH }?p_grcu_sec=${ p_course }&p_fial_sec=${ p_studentId }&p_nacu_tipo_peri=${ p_selectedPeriod }`, {
-            method: 'POST',
-            headers: { Authorization: AUTHORIZATION, 'Content-Type': CONTENT_TYPE },
-            body: getAccesEviroment ( )
+            method: 'GET',
+            headers: { Authorization: AUTHORIZATION, 'Content-Type': CONTENT_TYPE } 
         })
         .then( async ( query ) =>  await query.json ( ) )
         .catch ( error => console.log ( 'error', error ) ) 
@@ -175,9 +200,8 @@ class Api {
         const AUTHORIZATION = `${p_auth.token_type} ${p_auth.access_token}`
         const PATH = 'Med_get_asist_alumno'
         const result = await fetch( `${ BASE_API_URL }${ BASE_PATH_URL }${ PATH }?p_grcu_sec=${ p_course }&p_fial_sec=${ p_studentId }`, {
-            method: 'POST',
-            headers: { Authorization: AUTHORIZATION, 'Content-Type': CONTENT_TYPE },
-            body: getAccesEviroment ( )
+            method: 'GET',
+            headers: { Authorization: AUTHORIZATION, 'Content-Type': CONTENT_TYPE } 
         })
         .then( async ( query ) =>  await query.json ( ) )
         .catch ( error => console.log ( 'error', error ) ) 
@@ -190,9 +214,8 @@ class Api {
         const AUTHORIZATION = `${p_auth.token_type} ${p_auth.access_token}`
         const PATH = 'Med_get_obser_alumno'
         const result = await fetch( `${ BASE_API_URL }${ BASE_PATH_URL }${ PATH }?p_grcu_sec=${ p_course }&p_fial_sec=${ p_studentId }`, {
-            method: 'POST',
-            headers: { Authorization: AUTHORIZATION, 'Content-Type': CONTENT_TYPE },
-            body: getAccesEviroment ( )
+            method: 'GET',
+            headers: { Authorization: AUTHORIZATION, 'Content-Type': CONTENT_TYPE } 
         })
         .then( async ( query ) =>  await query.json ( ) )
         .catch ( error => console.log ( 'error', error ) ) 
@@ -205,24 +228,22 @@ class Api {
         const AUTHORIZATION = `${p_auth.token_type} ${p_auth.access_token}`
         const PATH = 'Med_get_lista_curso'
         const result = await fetch( `${ BASE_API_URL }${ BASE_PATH_URL }${ PATH }?p_grcu_sec=${ p_course }`, {
-            method: 'POST',
-            headers: { Authorization: AUTHORIZATION, 'Content-Type': CONTENT_TYPE },
-            body: getAccesEviroment ( )
+            method: 'GET',
+            headers: { Authorization: AUTHORIZATION, 'Content-Type': CONTENT_TYPE } 
         })
-        .then( async ( query ) =>  await query.json ( ) )
+        .then( async ( query ) => await query.json ( ) )
         .catch ( error => console.log ( 'error', error ) ) 
         return result.retorno 
     }
 
     //Nursing list
     //Get nursing list by student
-    async getNursingListByStudent ( p_auth, p_esed_sec, p_course, p_studentId ) {
+    async getNursingListByStudent ( p_auth, p_school, p_course, p_studentId ) {
         const AUTHORIZATION = `${p_auth.token_type} ${p_auth.access_token}`
         const PATH = 'Med_get_datos_enfermeria'
-        const result = await fetch( `${ BASE_API_URL }${ BASE_PATH_URL }${ PATH }?p_esed_sec=${ p_esed_sec }&p_grcu_sec=${ p_course }&p_fial_sec=${ p_studentId }`, {
-            method: 'POST',
-            headers: { Authorization: AUTHORIZATION, 'Content-Type': CONTENT_TYPE },
-            body: getAccesEviroment ( )
+        const result = await fetch( `${ BASE_API_URL }${ BASE_PATH_URL }${ PATH }?p_esed_sec=${ p_school }&p_grcu_sec=${ p_course }&p_fial_sec=${ p_studentId }`, {
+            method: 'GET',
+            headers: { Authorization: AUTHORIZATION, 'Content-Type': CONTENT_TYPE } 
         })
         .then( async ( query ) =>  await query.json ( ) )
         .catch ( error => console.log ( 'error', error ) ) 
@@ -235,15 +256,42 @@ class Api {
         const AUTHORIZATION = `${p_auth.token_type} ${p_auth.access_token}`
         const PATH = 'Med_get_datos_documentos'
         const result = await fetch( `${ BASE_API_URL }${ BASE_PATH_URL }${ PATH }?p_grcu_sec=${ p_course }&p_peri_sec=41`, {
-            method: 'POST',
-            headers: { Authorization: AUTHORIZATION, 'Content-Type': CONTENT_TYPE },
-            body: getAccesEviroment ( )
+            method: 'GET',
+            headers: { Authorization: AUTHORIZATION, 'Content-Type': CONTENT_TYPE } 
         })
         .then( async ( query ) =>  await query.json ( ) )
         .catch ( error => console.log ( 'error', error ) ) 
         return result.retorno
     }
 
+    //Documents list
+    //Get document by code
+    async getDocumentByCode ( p_auth, p_document_code, p_document_id, p_document_name, p_document_ext ) {
+        const AUTHORIZATION = `${p_auth.token_type} ${p_auth.access_token}`
+        const PATH = 'Med_get_documento_b24'
+        const documentBlob = await RNFetchBlob.config({ fileCache : true, })
+        .fetch('GET', `${ BASE_API_URL }${ BASE_PATH_URL }${ PATH }?p_docu_cod_clave=${ p_document_code }`, {
+            Authorization: AUTHORIZATION, 'Content-Type': CONTENT_TYPE,
+        })
+        .then((res) => {
+            let status = res.info().status;
+            if(status == 200) {
+                // the conversion is done in native code //let base64Str = res.base64() //console.log(base64Str) // the following conversions are done in js, it's SYNC //let text = res.text()
+                let json = res.json()
+                return json
+            } 
+            else { /* handle other status codes */ }
+        })
+        .catch((errorMessage, statusCode) => {
+            console.log(errorMessage, statusCode)
+        })
+        const { fs } = RNFetchBlob
+        const DownloadDir = Platform.OS === 'ios' ? fs.dirs['MainBundleDir'] : fs.dirs['SDCardDir'] + '/EducApp/Documentos'
+        if (Platform.OS === 'android') { RNFetchBlob.fs.mkdir(DownloadDir) }
+        const NEW_FILE_PATH = `${ DownloadDir }/${p_document_id}_${p_document_name}.${p_document_ext}`
+        RNFetchBlob.fs.createFile(NEW_FILE_PATH, documentBlob.retorno, 'base64')
+        return NEW_FILE_PATH  
+    }
 }
 
-export default new Api();     
+export default new Api()     

@@ -1,6 +1,6 @@
-import React from 'react';
+import React from 'react'
 import { View } from 'react-native'
-import { ListItem, Text, Body, Right, Badge } from 'native-base';
+import { ListItem, Text, Body, Right, Badge } from 'native-base'
 
 renderBadge = ( rating ) => {
     if ( ( parseInt ( rating ) > 0  && parseInt ( rating ) < 4 ) || ( rating == 'I' ) ) {

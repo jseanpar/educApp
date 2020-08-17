@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
-import { SafeAreaView, BackHandler, FlatList, View, ActivityIndicator } from 'react-native'
+import { BackHandler, FlatList, View, ActivityIndicator } from 'react-native'
 import { connect } from 'react-redux'
 import { NavigationActions } from 'react-navigation'
-import { Container, Content } from 'native-base'
+import { Container } from 'native-base'
 
 import API from '../../../utils/api'
 import Header  from '../../sections/containers/header'
@@ -59,24 +59,22 @@ class SubjectList extends Component {
 
     render () {
         return (
-            <SafeAreaView style = { { flex:1 } } >
-                <Container>
-                    <Header navigation = { this.props.navigation } title = 'Notas' >
-                        <HeaderBackButton onPress = { () => { this.props.navigation.goBack() } } />
-                    </Header>
-                    <Content padder>
-                        <SudentInfo navigation = { this.props.navigation } />
-                        { this.state.loading ? 
-                            <ActivityIndicator color = "#0098D0" size = "large" style = { { flex: 1, justifyContent: 'center', alignItems: 'center', height: 200 } } />
-                        : 
-                            (<View style = { { marginTop: 10 } } >
-                                <FlatList keyExtractor = { this.keyExtractor } data = { this.props.subjectList } ListEmptyComponent = { this.renderEmpty } 
-                                    renderItem = { this.renderItem } />
-                            </View>) 
-                        } 
-                    </Content>
-                </Container>
-            </SafeAreaView>
+            <Container>
+                <Header title = 'Asignaturas' navigation = { this.props.navigation } showMenu = { true } >
+                    <HeaderBackButton onPress = { () => { this.props.navigation.goBack() } } />
+                </Header>
+                <View style={{ flex: 1, margin: 10 }}>
+                    <SudentInfo navigation = { this.props.navigation } />
+                    { this.state.loading ? 
+                        <ActivityIndicator color = "#0098D0" size = "large" style = { { flex: 1, justifyContent: 'center', alignItems: 'center', height: 200 } } />
+                    : 
+                        (<View style = { { marginTop: 10 } } >
+                            <FlatList keyExtractor = { this.keyExtractor } data = { this.props.subjectList } ListEmptyComponent = { this.renderEmpty } 
+                                renderItem = { this.renderItem } />
+                        </View>) 
+                    } 
+                </View>
+            </Container>
         )
     } 
 }

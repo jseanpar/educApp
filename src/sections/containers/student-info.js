@@ -20,7 +20,7 @@ class StudentInfo extends Component {
     }
 
     periodPress = ( ) => { 
-        this.props.dispatch ( NavigationActions.navigate ( { routeName: 'PeriodList' } ) )
+        this.props.dispatch ( NavigationActions.navigate ( { routeName: 'PeriodList', params: { backToStudentList: false } } ) )
     }
 
     render () {

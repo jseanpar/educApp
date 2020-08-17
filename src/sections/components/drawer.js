@@ -1,9 +1,8 @@
-import React from 'react';
-import { SafeAreaView, ScrollView } from 'react-native';
-import { Header, Subtitle, Left, Right, Thumbnail } from 'native-base'
-import { DrawerNavigatorItems } from 'react-navigation-drawer';
-import { connect } from 'react-redux';
-//import { Header } from 'react-native/Libraries/NewAppScreen';
+import React from 'react'
+import { ScrollView } from 'react-native'
+import { Header, Title, Left, Right, Thumbnail } from 'native-base'
+import { DrawerNavigatorItems } from 'react-navigation-drawer'
+import { connect } from 'react-redux'
 
 handleDrawer = ( props ) => {
     switch (props.activeItemKey) {
@@ -20,16 +19,14 @@ function Drawer ( props ) {
     handleDrawer ( props )
     return (
         <ScrollView> 
-            <SafeAreaView>
-                <Header style = { { backgroundColor: '#0098D0' } }  androidStatusBarColor="#0A74BC" >
-                    <Left>
-                        <Subtitle style = { { marginLeft: 5 } }>Menu</Subtitle>
-                    </Left>
-                    <Right>
-                        <Thumbnail square small source={ require ( '../../../assets/234.png' ) } style = {{resizeMode: 'contain'}} />
-                    </Right>
-                </Header>
-            </SafeAreaView>
+            <Header style = { { backgroundColor: '#0098D0' } }  androidStatusBarColor="#0A74BC" >
+                <Left>
+                    <Title style = { { marginLeft: 5, color: '#fff' } }>Menu</Title>
+                </Left>
+                <Right>
+                    <Thumbnail square small source={ require ( '../../../assets/logo-app.png' ) } style = {{resizeMode: 'contain'}} />
+                </Right>
+            </Header>
             <DrawerNavigatorItems { ...props } />
         </ScrollView>
     )

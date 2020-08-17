@@ -1,6 +1,6 @@
-import React from 'react';
-import { View, StyleSheet, Image } from 'react-native';
-import { Text } from 'native-base';
+import React from 'react'
+import { View, StyleSheet, Image } from 'react-native'
+import { Text } from 'native-base'
 
 function Empty ( props ) {
     return (

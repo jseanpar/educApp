@@ -3,7 +3,7 @@ import { Button, Icon } from 'native-base'
 
 function HeaderBackButton ( props ) {
     return (
-        <Button onPress = { props.onPress }  transparent><Icon name="arrow-back"/></Button>
+        <Button onPress = { props.onPress } transparent><Icon name = "arrow-back" style = { { color: '#fff' } } /></Button>
     )
 }
 

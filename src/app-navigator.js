@@ -6,9 +6,10 @@ import { Icon } from 'native-base'
 import Loading from './screens/containers/loading'
 import Login from './screens/containers/login'
 import MessageList from './screens/containers/message-list'
+import Profile from './screens/containers/profile'
 import StudentList from './screens/containers/student-list'
 import ChangePassword from './screens/containers/change-password'
-import CloseSession from './screens/containers/close-session' 
+import Logout from './screens/containers/logout' 
 import PeriodList from './screens/containers/period-list'
 import Dashboard from './screens/containers/dashboard'
 import SubjectList from './screens/containers/subject-list'
@@ -21,17 +22,15 @@ import DocumentList from './screens/containers/document-list'
 import DrawerComponent from './sections/components/drawer'
 
 const Main = createStackNavigator ( {
-    StudentList: StudentList,
-    MessageList: MessageList,
-    PeriodList: PeriodList,
     Dashboard : Dashboard,
+    MessageList: MessageList,
     SubjectList : SubjectList,
     SubjectDetail : SubjectDetail, 
     Attendance: Attendance, 
     NotesList: NotesList,
     CourseStudentList: CourseStudentList,
     NursingList: NursingList,
-    DocumentList: DocumentList
+    DocumentList: DocumentList,
 },
 {
     defaultNavigationOptions: {
@@ -53,29 +52,35 @@ const DrawerNavigation = createDrawerNavigator ( {
         screen: Main,
         navigationOptions: {
             title: 'Inicio',
-            //drawerIcon: <Icon name="ios-home" style = { { fontSize: 16, color: '#0098D0' } } />,
             drawerLabel: () => null
         }
     }, 
+    Profile: {
+        screen: Profile,
+        navigationOptions:{
+            title: 'Perfil',
+            drawerIcon: <Icon name = "md-contact" style = { { fontSize: 16, color: '#0A74BC' } } />
+        }
+    },
     StudentList: {
         screen: StudentList,
         navigationOptions:{
             title: 'Alumnos',
-            drawerIcon: <Icon name = "ios-people" style = { { fontSize: 16, color: '#0098D0' } } />
+            drawerIcon: <Icon name = "ios-people" style = { { fontSize: 16, color: '#0A74BC' } } />
         }
     },
     ChangePassword: {
         screen: ChangePassword,
         navigationOptions:{
-            title: 'Cambiar Password',
-            drawerIcon: <Icon name = "md-key" style = { { fontSize: 16, color: '#0098D0' } } />
+            title: 'Cambiar contraseña',
+            drawerIcon: <Icon name = "md-key" style = { { fontSize: 16, color: '#0A74BC' } } />
         }
     },
-    Login: {
-        screen: CloseSession,
+    Logout: {
+        screen: Logout,
         navigationOptions: {
             title: 'Cerrar sesión',
-            drawerIcon: <Icon name = "md-power" style = { { fontSize: 16, color: '#0098D0' } } />
+            drawerIcon: <Icon name = "md-exit" style = { { fontSize: 16, color: '#0A74BC' } } />
         }
     }
 },
@@ -88,16 +93,12 @@ const DrawerNavigation = createDrawerNavigator ( {
     contentComponent: DrawerComponent,
     contentOptions: {
         activeBackgroundColor: '#eaeaeb', 
-        activeTintColor: '#0098D0',
-        inactiveTintColor: '#8e8e93',
+        activeTintColor: '#0A74BC',
+        inactiveTintColor: '#0098D0',//'#8e8e93',
         inactiveBackgroundColor: '#fff',
-        itemStyle: {
-            //borderBottomWidth: .5,
-            //borderBottomColor: '#eaeaeb',
-        }, 
+        itemStyle: { }, 
         labelStyle: {
             fontFamily: 'Roboto',
-            
             marginHorizontal: 0,
         },
         iconContainerStyle: {
@@ -111,9 +112,12 @@ const SwitchNavigator = createSwitchNavigator (
         App: DrawerNavigation,
         Login: Login,
         Loading: Loading,
+        StudentList: StudentList,
+        PeriodList: PeriodList,
+        ChangePassword: ChangePassword,
     },
     {
-        initialRouteName: 'Login', 
+        initialRouteName: 'Loading', 
     }
 )
 

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import { SafeAreaView, BackHandler, ActivityIndicator, View, FlatList } from 'react-native'
+import { BackHandler, ActivityIndicator, View, FlatList } from 'react-native'
 import { connect } from 'react-redux';
-import { Container, Content } from "native-base"
+import { Container } from "native-base"
 import { NavigationActions } from 'react-navigation'
 
 import API from '../../../utils/api'
@@ -12,17 +12,14 @@ import Period from '../../sections/containers/period'
 
 class PeriodList extends Component {
 
-    state = { 
-        loading: true,
-        clicked: false
-    }
+    state = { loading: true, clicked: false }
 
     constructor ( props ) {
         super ( props )
         this.handleBackButtonClick = this.handleBackButtonClick.bind ( this )
     }
 
-    static navigationOptions = () => { return { header: null } }
+    static navigationOptions = () => { return { header: null, drawerLockMode: 'locked-closed', } }
 
     async componentDidMount () {
         const periodList = await API.getPeriodListByPeriodType ( this.props.student.esde_tipo_periodo )
@@ -36,12 +33,18 @@ class PeriodList extends Component {
     }
     
     handleBackButtonClick () {
-        this.props.navigation.goBack ( null )
-        return true
+        if (this.props.navigation.state.params.backToStudentList) {
+            return this.props.dispatch ( NavigationActions.navigate ( { routeName: 'StudentList' } ) )
+        }
+        else {
+            return this.props.dispatch ( NavigationActions.navigate ( { routeName: 'Dashboard' } ) )
+        }
     }
+    
     keyExtractor = item => item.id.toString ()
     renderEmpty = () => <Empty text = "No se encontraron registros" />
     periodPress = ( item ) => { 
+        this.setState( { clicked: true })
         this.props.dispatch ( { type: 'SET_SELECTED_PERIOD', payload: { selectedPeriod: item } } )
         API.getAuth()
         .then ( ( auth ) => {
@@ -58,25 +61,32 @@ class PeriodList extends Component {
         )
     }
 
+    handleHeaderBackButtonClick = () => {
+        if (this.props.navigation.state.params.backToStudentList) {
+            return this.props.dispatch ( NavigationActions.navigate ( { routeName: 'StudentList' } ) )
+        }
+        else {
+            return this.props.dispatch ( NavigationActions.navigate ( { routeName: 'Dashboard' } ) )
+        }
+    }
+
     render () {
         return (
-            <SafeAreaView style = { { flex:1 } } >
-                <Container>
-                    <Header title = 'Seleccion de periodo' navigation = { this.props.navigation } >
-                        <HeaderBackButton onPress = { () => { this.props.navigation.goBack() } } />
-                    </Header>
-                    <Content padder>
-                        { this.state.loading ? 
-                            <ActivityIndicator color = "#0098D0" size = "large" style = { { flex: 1, justifyContent: 'center', alignItems: 'center', height: 200 } } />
-                        : 
-                            (<View style = { { marginTop: 10 } } >
-                                <FlatList keyExtractor = { this.keyExtractor } data = { this.props.periodList } ListEmptyComponent = { this.renderEmpty } 
-                                    renderItem = { this.renderItem } />
-                            </View>) 
-                        } 
-                    </Content>
-                </Container>
-            </SafeAreaView> 
+            <Container>
+                <Header title = 'Seleccion de periodo' navigation = { this.props.navigation } showMenu = { false } >
+                    <HeaderBackButton onPress = { this.handleHeaderBackButtonClick } />
+                </Header>
+                <View style={{ flex: 1, margin: 10 }}>
+                    { ( this.state.loading || this.state.clicked) ? 
+                        <ActivityIndicator color = "#0098D0" size = "large" style = { { flex: 1, justifyContent: 'center', alignItems: 'center', height: 200 } } />
+                    : 
+                        (<View style = { { marginTop: 10 } } >
+                            <FlatList keyExtractor = { this.keyExtractor } data = { this.props.periodList } ListEmptyComponent = { this.renderEmpty } 
+                                renderItem = { this.renderItem } />
+                        </View>) 
+                    } 
+                </View>
+            </Container>
         )
     }
 }

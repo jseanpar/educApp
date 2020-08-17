@@ -1,18 +1,17 @@
 import React, { Component } from 'react'
-import { SafeAreaView, FlatList, BackHandler, ActivityIndicator } from 'react-native'
-import { Container, Content } from 'native-base';
+import { BackHandler, ActivityIndicator, View } from 'react-native'
+import { Container } from 'native-base'
 import { connect } from 'react-redux'
+import Timeline from 'react-native-timeline-flatlist'
 
-import API from '../../../utils/api';
-import Header  from '../../sections/containers/header';
+import API from '../../../utils/api'
+import Header  from '../../sections/containers/header'
 import HeaderBackButton from '../../sections/components/header-back-button'
-import SudentInfo from '../../sections/containers/student-info';
 import Empty from '../../sections/components/empty'
-import Message from '../components/message'
 
 class MessagetList extends Component { 
 
-    state = { loading: true }
+    state = { loading: true, eventList: null, messageCount: 0 }
 
     constructor ( props ) {
         super ( props )
@@ -26,9 +25,9 @@ class MessagetList extends Component {
         .then( ( auth ) => {
             API.getMessageListByUser ( auth, this.props.user.userCardId )
             .then( ( messageList ) => {
-                console.log(messageList)
                 this.props.dispatch ( { type: 'SET_MESSAGE_LIST', payload: { messageList } } )
-                this.setState ( { loading: false } )
+                this.setState ( { loading: false, messageCount: messageList.length } )
+                this.renderMessageList ( messageList )
             } )
         })
                 
@@ -44,38 +43,36 @@ class MessagetList extends Component {
         return true
     }
 
-    keyExtractor = item => item.mens_sec.toString ()
-    renderEmpty = () => <Empty text = "No se encontraron registros"/>
-
-    renderItem = ( { item } ) => { 
-        const dateTime = String(item.mens_fec_ing).split('T')
-        const date = String(dateTime[0]).split('-');
-        const dateFormat = parseInt(date[2]) + '-' + parseInt(date[1]) + '-' + parseInt(date[0])
-        return ( <Message { ...item } date = { dateFormat } /> ) 
+    renderMessageList = ( messageList ) => {
+        var eventList = []
+        messageList.map( (message) => {  
+            eventList.push ( { time: message.fec_ing_fmt, title: message.mens_fec_ing.substring ( 11, 16 ), description: message.mens_texto, lineColor: '#0098D0', circleColor : '#0098D0' }  ) 
+        } )
+        this.setState ( { eventList } )
     }
     
     render() {
         return (
-            <SafeAreaView style = { { flex:1 } } >
-                <Container>
-                    <Header navigation = { this.props.navigation } title = 'Mensajes' >
-                        <HeaderBackButton onPress = { () => { this.props.navigation.goBack() } } />
-                    </Header>
-                    <Content padder>
-                        {/* <SudentInfo navigation = { this.props.navigation } /> */}
-                        { this.state.loading ? 
-                            <ActivityIndicator color = "#0098D0" size = "large" style = {{flex: 1, justifyContent: 'center', alignItems: 'center', height: 200}} />
-                        : 
-                            (<FlatList keyExtractor = { this.keyExtractor } data = { this.props.messageList } ListEmptyComponent = { this.renderEmpty } 
-                                renderItem = { this.renderItem } />) 
-                        } 
-                    </Content>
-                </Container>
-            </SafeAreaView>
+            <Container>
+                <Header title = 'Mensajes' navigation = { this.props.navigation } showMenu = { true } >
+                    <HeaderBackButton onPress = { () => { this.props.navigation.goBack() } } />
+                </Header>
+                <View style={{ flex: 1, margin: 10 }}>
+                    { this.state.loading ? 
+                        <ActivityIndicator color = "#0098D0" size = "large" style = {{flex: 1, justifyContent: 'center', alignItems: 'center', height: 200 } } />
+                    :
+                        this.state.messageCount == 0 ? <Empty text = "No se encontraron registros" /> :
+                        ( <Timeline data= { this.state.eventList } innerCircle = { 'dot' } timeContainerStyle = { { minWidth:52 } }
+                        timeStyle = { { fontSize: 9, textAlign: 'center', backgroundColor: '#DDA01E', color: 'white', padding: 5, borderRadius: 13 } } 
+                        titleStyle = { { fontSize: 11, color: 'gray' } } 
+                        descriptionStyle = { { fontSize: 10, color: 'gray' } } /> ) 
+                    } 
+                </View>
+            </Container>
         )
     }
 }
 
 function mapStateToProps ( state ) { return { user: state.userReducer, messageList: state.userReducer.messageList } }
 
-export default connect ( mapStateToProps ) ( MessagetList );
+export default connect ( mapStateToProps ) ( MessagetList )
